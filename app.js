@@ -1,8 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const routesCompanies = require('./routes/companies');
-const routesUsers = require('./routes/users');
-const routeSwagger = require('./routes/swagger');
+const routes = require('./routes/routes');
 const mongodb = require('./db/connection');
 
 
@@ -12,9 +10,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-app.use('/companies', routesCompanies);
-app.use('/users', routesUsers);
-app.use('/', routeSwagger);
+app.use('/', routes);
 
 mongodb.startDb((err) => {
     if(err){
