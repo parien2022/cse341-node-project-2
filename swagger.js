@@ -5,7 +5,7 @@ const doc = {
         title: 'Broker API',
         description: 'Broker API'
     },
-    host: 'https://broker-api-mum6.onrender.com',
+    host: 'broker-api-mum6.onrender.com',
     schemes: ['https', 'http']
 };
 
