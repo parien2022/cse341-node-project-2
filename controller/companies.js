@@ -22,7 +22,7 @@ const getAll = async (req, res) => {
 const getSingle = async (req, res) => {
 
   if(!ObjectId.isValid(req.params.id)){
-    res.status(400).json('Must use a valid user id')
+    res.status(400).json('Must use a valid company id')
   }
     const companyId = new ObjectId(req.params.id)
 
@@ -72,7 +72,7 @@ const createCompany = async (req, res) => {
   const updateCompany = async (req, res) => {
 
     if(!ObjectId.isValid(req.params.id)){
-      res.status(400).json('Must use a valid user id')
+      res.status(400).json('Must use a valid company id')
     }
 
     const companyId = new ObjectId(req.params.id)
@@ -105,7 +105,7 @@ const createCompany = async (req, res) => {
   const deleteCompany = async (req, res) => {
 
     if(!ObjectId.isValid(req.params.id)){
-      res.status(400).json('Must use a valid user id')
+      res.status(400).json('Must use a valid company id')
     }
 
     const companyId = new ObjectId(req.params.id)
