@@ -5,7 +5,7 @@
     "description": "Broker API",
     "version": "1.0.0"
   },
-  "host": "https://broker-api-mum6.onrender.com",
+  "host": "broker-api-mum6.onrender.com",
   "basePath": "/",
   "schemes": [
     "https",
