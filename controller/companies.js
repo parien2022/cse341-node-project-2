@@ -1,37 +1,43 @@
 const mongodb = require('../db/connection');
 const ObjectId = require('mongodb').ObjectId;
 
-const getAll = (req, res) => {
+const getAll = async (req, res) => {
 
-    mongodb
+     await mongodb
     .getDataBase()
     .db('broker')
     .collection('companies')
     .find()
-    .toArray((err, companies) => {
-        if(err){
-            res.status(400).json({message: err})
-        }
+    .toArray()
+    .then((companies) => {
         res.setHeader('Content-Type', 'application/json')
         res.status(200).json(companies);
+    })
+    .catch(err => {
+      res.status(400).json({message: err});
     })
 
 }
 
-const getSingle = (req, res) => {
+const getSingle = async (req, res) => {
+
+  if(!ObjectId.isValid(req.params.id)){
+    res.status(400).json('Must use a valid user id')
+  }
     const companyId = new ObjectId(req.params.id)
 
-    mongodb
+    await mongodb
       .getDataBase()
       .db('broker')
       .collection('companies')
       .find({ _id: companyId })
-      .toArray((err, companies) => {
-        if(err){
-            res.status(400).json({message: err})
-        }
+      .toArray()
+      .then((companies) => {
       res.setHeader('Content-Type', 'application/json')
       res.status(200).json(companies[0])
+    })
+    .catch(err => {
+      res.status(400).json({message: err});
     })
 }
 
@@ -56,9 +62,7 @@ const createCompany = async (req, res) => {
       .insertOne(company);
   
     if (response.acknowledged) {
-      res
-      .status(200).json({_id: response.insertedId})
-      .send();
+      res.status(201).json({_id: response.insertedId});
     } else {
       res.status(500).json(response.error || 'Some error ocurred while creating the company');
     }
@@ -66,6 +70,10 @@ const createCompany = async (req, res) => {
 
 
   const updateCompany = async (req, res) => {
+
+    if(!ObjectId.isValid(req.params.id)){
+      res.status(400).json('Must use a valid user id')
+    }
 
     const companyId = new ObjectId(req.params.id)
 
@@ -96,6 +104,10 @@ const createCompany = async (req, res) => {
 
   const deleteCompany = async (req, res) => {
 
+    if(!ObjectId.isValid(req.params.id)){
+      res.status(400).json('Must use a valid user id')
+    }
+
     const companyId = new ObjectId(req.params.id)
   
     const response = await mongodb
@@ -107,7 +119,7 @@ const createCompany = async (req, res) => {
       if (response.deletedCount > 0) {
         res.status(204).send();
       } else {
-        res.status(500).json(response.error || 'Some error ocurred while updating the company');
+        res.status(500).json(response.error || 'Some error ocurred while deleting the company');
       }
   }
 

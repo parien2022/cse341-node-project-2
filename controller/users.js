@@ -3,31 +3,41 @@ const ObjectId = require('mongodb').ObjectId;
 
 const getAll = async (req, res) => {
 
-    const queryResult = await mongodb
+     await mongodb
     .getDataBase()
     .db('broker')
     .collection('users')
-    .find();
-
-    queryResult.toArray().then((users) => {
+    .find()
+    .toArray()
+    .then((users) => {
         res.setHeader('Content-Type', 'application/json')
         res.status(200).json(users);
+    })
+    .catch(err => {
+      res.status(400).json({message: err});
     })
 
 }
 
 const getSingle = async (req, res) => {
+    if(!ObjectId.isValid(req.params.id)){
+      res.status(400).json('Must use a valid user id')
+    }
+
     const userId = new ObjectId(req.params.id)
 
-    const queryResult = await mongodb
+   await mongodb
       .getDataBase()
       .db('broker')
       .collection('users')
       .find({ _id: userId })
-
-    queryResult.toArray().then((users) => {
+      .toArray()
+      .then((users) => {
       res.setHeader('Content-Type', 'application/json')
       res.status(200).json(users[0])
+    })
+    .catch(err => {
+      res.status(400).json({message: err});
     })
 }
 
@@ -40,7 +50,7 @@ const createUser = async (req, res) => {
     email: req.body.email,
     birthday: req.body.birthday,
     location: req.body.location,
-    available_amount: req.bodyavailable_amount
+    available_amount: req.body.available_amount
   }
 
     const response = await mongodb
@@ -50,9 +60,8 @@ const createUser = async (req, res) => {
       .insertOne(user);
   
     if (response.acknowledged) {
-      res
-      .status(200).json({_id: response.insertedId})
-      .send();
+      
+      res.status(201).json({_id: response.insertedId});
     } else {
       res.status(500).json(response.error || 'Some error ocurred while creating the user');
     }
@@ -60,6 +69,10 @@ const createUser = async (req, res) => {
 
 
   const updateUser = async (req, res) => {
+
+    if(!ObjectId.isValid(req.params.id)){
+      res.status(400).json('Must use a valid user id')
+    }
 
     const userId = new ObjectId(req.params.id)
 
@@ -69,7 +82,7 @@ const createUser = async (req, res) => {
         email: req.body.email,
         birthday: req.body.birthday,
         location: req.body.location,
-        available_amount: req.bodyavailable_amount
+        available_amount: req.body.available_amount
       }
   
     const response = await mongodb
@@ -87,6 +100,10 @@ const createUser = async (req, res) => {
 
 
   const deleteUser = async (req, res) => {
+    
+    if(!ObjectId.isValid(req.params.id)){
+      res.status(400).json('Must use a valid user id')
+    }
 
     const userId = new ObjectId(req.params.id)
   
@@ -99,7 +116,7 @@ const createUser = async (req, res) => {
       if (response.deletedCount > 0) {
         res.status(204).send();
       } else {
-        res.status(500).json(response.error || 'Some error ocurred while updating the user');
+        res.status(500).json(response.error || 'Some error ocurred while deleting the user');
       }
   }
 

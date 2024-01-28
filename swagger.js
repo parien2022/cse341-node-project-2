@@ -5,11 +5,11 @@ const doc = {
         title: 'Broker API',
         description: 'Broker API'
     },
-    host: 'localhost:8081',
+    host: 'https://broker-api-mum6.onrender.com',
     schemes: ['https', 'http']
 };
 
 const outputFile = './swagger.json';
-const endpointsFiles = ['./routes/routes'];
+const endpointsFiles = ['./routes/index.js'];
 
 swaggerAutoGen(outputFile, endpointsFiles, doc);
